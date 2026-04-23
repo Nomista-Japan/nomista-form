@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nomista 加盟店 申し込み</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif; background: #fff; color: #1a1a1a; font-size: 14px; }
+
+  .wrap { max-width: 680px; margin: 0 auto; padding: 40px 24px 60px; }
+
+  .form-tag { display: inline-block; background: #FDF4DC; color: #8B6914; font-size: 11px; letter-spacing: .1em; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+  .form-title { font-size: 24px; font-weight: 600; color: #1a1a1a; line-height: 1.4; margin-bottom: 10px; }
+  .form-desc  { font-size: 13px; color: #666; line-height: 1.8; margin-bottom: 36px; }
+
+  .section-heading { font-size: 11px; letter-spacing: .14em; color: #C9A84C; text-transform: uppercase; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #C9A84C44; }
+  .section-block { margin-bottom: 36px; }
+
+  .field { margin-bottom: 16px; }
+  .field label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 7px; }
+  .required { background: #C9A84C; color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 3px; }
+  .optional  { background: #f0f0f0; color: #999; font-size: 10px; padding: 1px 6px; border-radius: 3px; }
+
+  .field input, .field select, .field textarea {
+    width: 100%; border: 1px solid #ddd; border-radius: 8px;
+    padding: 10px 13px; font-size: 14px; color: #1a1a1a;
+    font-family: inherit; appearance: none; background: #fff;
+    transition: border-color .2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #C9A84C; }
+  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; }
+  .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  .field-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .field-hint { font-size: 11px; color: #999; margin-top: 5px; line-height: 1.6; }
+
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .checkbox-item  { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  .checkbox-item input[type=checkbox] { width: 15px; height: 15px; accent-color: #C9A84C; cursor: pointer; }
+
+  .divider { border: none; border-top: 1px solid #f0f0f0; margin: 0 0 28px; }
+
+  .confirm-box { background: #fafafa; border-radius: 10px; padding: 18px 20px; margin-bottom: 24px; border: 1px solid #eee; }
+  .confirm-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+  .confirm-text  { font-size: 12px; color: #666; line-height: 1.9; }
+
+  .submit-btn { width: 100%; background: #C9A84C; color: #fff; border: none; border-radius: 40px; padding: 16px; font-size: 16px; font-weight: 600; letter-spacing: .05em; cursor: pointer; transition: background .2s; }
+  .submit-btn:hover:not(:disabled) { background: #b8943e; }
+  .submit-btn:disabled { background: #ddd; cursor: not-allowed; }
+  .submit-note { text-align: center; font-size: 11px; color: #aaa; margin-top: 12px; line-height: 1.8; }
+
+  .success-box { display: none; text-align: center; padding: 48px 24px; }
+  .success-icon { font-size: 48px; margin-bottom: 16px; }
+  .success-title { font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+  .success-text  { font-size: 14px; color: #666; line-height: 1.8; }
+
+  .error-msg { display: none; background: #fff0f0; border: 1px solid #ffcccc; color: #c00; border-radius: 8px; padding: 12px 16px; font-size: 13px; margin-bottom: 16px; }
+
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+    .wrap { padding: 24px 16px 48px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- フォーム本体 -->
+  <div id="form-area">
+    <div class="form-tag">加盟店 無料掲載 申し込み</div>
+    <div class="form-title">Nomistaへの掲載を<br>申し込む</div>
+    <div class="form-desc">フォームにご記入いただくと、2営業日以内に担当者よりメールにてご連絡いたします。まずはお気軽にどうぞ。</div>
+
+    <div id="error-msg" class="error-msg">送信に失敗しました。内容を確認して再度お試しください。</div>
+
+    <!-- Section 1 -->
+    <div class="section-block">
+      <div class="section-heading">Section 1 — 店舗基本情報</div>
+
+      <div class="field">
+        <label>店名・屋号 <span class="required">必須</span></label>
+        <input type="text" id="shopName" placeholder="例：炭火焼き鳥 鳥一">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>業種 <span class="required">必須</span></label>
+          <select id="category">
+            <option value="" disabled selected>選択してください</option>
+            <option>居酒屋</option>
+            <option>バー・ダイニングバー</option>
+            <option>焼き鳥・串焼き</option>
+            <option>焼肉・ホルモン</option>
+            <option>海鮮・魚介</option>
+            <option>和食・割烹</option>
+            <option>イタリアン・洋食</option>
+            <option>カフェ・喫茶</option>
+            <option>その他</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>エリア・住所 <span class="required">必須</span></label>
+          <input type="text" id="area" placeholder="例：札幌市中央区">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>席数 <span class="optional">任意</span></label>
+          <input type="text" id="seats" placeholder="例：30席">
+        </div>
+        <div class="field">
+          <label>営業時間 <span class="optional">任意</span></label>
+          <input type="text" id="hours" placeholder="例：17:00〜24:00">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>店舗の一言PR <span class="optional">任意</span></label>
+        <textarea id="pr" placeholder="例：創業20年の老舗。地元の常連に愛される炭火焼きが自慢です。"></textarea>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section 2 -->
+    <div class="section-block">
+      <div class="section-heading">Section 2 — Nomista 利用条件</div>
+
+      <div class="field">
+        <label>利用可能曜日 <span class="required">必須</span></label>
+        <div class="checkbox-group">
+          <label class="checkbox-item"><input type="checkbox" name="days" value="月"> 月曜日</label>
+          <label class="checkbox-item"><input type="checkbox" name="days" value="火"> 火曜日</label>
+          <label class="checkbox-item"><input type="checkbox" name="days" value="水"> 水曜日</label>
+          <label class="checkbox-item"><input type="checkbox" name="days" value="木"> 木曜日</label>
+          <label class="checkbox-item"><input type="checkbox" name="days" value="金"> 金曜日</label>
+          <label class="checkbox-item"><input type="checkbox" name="days" value="土"> 土曜日</label>
+          <label class="checkbox-item"><input type="checkbox" name="days" value="日"> 日曜日</label>
+          <label class="checkbox-item"><input type="checkbox" name="days" value="祝"> 祝日</label>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>利用開始時間 <span class="required">必須</span></label>
+          <input type="text" id="startTime" placeholder="例：18:00">
+        </div>
+        <div class="field">
+          <label>利用終了時間 <span class="required">必須</span></label>
+          <input type="text" id="endTime" placeholder="例：22:00（LO）">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>利用可能人数 <span class="required">必須</span></label>
+        <input type="text" id="maxPeople" placeholder="例：1〜4名、最大6名まで可">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>飲み放題時間 <span class="required">必須</span></label>
+          <input type="text" id="drinkTime" placeholder="例：90分">
+        </div>
+        <div class="field">
+          <label>延長料金 <span class="optional">任意</span></label>
+          <input type="text" id="extension" placeholder="例：30分 500円/人">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>席料・チャージ <span class="optional">任意</span></label>
+        <input type="text" id="charge" placeholder="例：なし / 300円/人">
+      </div>
+
+      <div class="field">
+        <label>注文必須メニュー <span class="optional">任意</span></label>
+        <input type="text" id="requiredMenu" placeholder="例：おまかせ小鉢 500円、フード1品以上">
+        <div class="field-hint">Nomistaユーザーが必ず注文すべきメニューがあれば記載してください</div>
+      </div>
+
+      <div class="field">
+        <label>Nomista 飲み放題メニュー <span class="required">必須</span></label>
+        <textarea id="drinkMenu" placeholder="例：生ビール・ハイボール・酎ハイ各種・ワイン（赤・白）・ソフトドリンク&#10;※日本酒・ウイスキーは対象外"></textarea>
+        <div class="field-hint">対象ドリンクの範囲を具体的に記載いただくと、ユーザーとのトラブルを防げます</div>
+      </div>
+
+      <div class="field">
+        <label>その他注意事項・特記事項 <span class="optional">任意</span></label>
+        <textarea id="notes" placeholder="例：予約必須、当日キャンセル不可、団体は要相談 など"></textarea>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Section 3 -->
+    <div class="section-block">
+      <div class="section-heading">Section 3 — ご担当者情報</div>
+
+      <div class="field">
+        <label>担当者名 <span class="required">必須</span></label>
+        <input type="text" id="contactName" placeholder="例：山田 太郎">
+      </div>
+
+      <div class="field">
+        <label>メールアドレス <span class="required">必須</span></label>
+        <input type="email" id="email" placeholder="例：yamada@example.com">
+        <div class="field-hint">日程調整のご連絡はこちらのアドレス宛にお送りします</div>
+      </div>
+
+      <div class="field">
+        <label>電話番号 <span class="required">必須</span></label>
+        <input type="tel" id="phone" placeholder="例：011-000-0000">
+      </div>
+    </div>
+
+    <div class="confirm-box">
+      <div class="confirm-title">送信後の流れ</div>
+      <div class="confirm-text">
+        1. フォーム送信後、自動返信メールが届きます<br>
+        2. 2営業日以内に担当者よりメールにてご連絡<br>
+        3. オンラインまたは訪問にてご説明・日程調整<br>
+        4. 掲載開始（最短1週間）
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()">無料で掲載を申し込む →</button>
+    <div class="submit-note">費用は一切かかりません。<br>送信後のキャンセルもお気軽にご相談ください。</div>
+  </div>
+
+  <!-- 送信完了メッセージ -->
+  <div class="success-box" id="success-area">
+    <div class="success-icon">✅</div>
+    <div class="success-title">お申し込みありがとうございます！</div>
+    <div class="success-text">
+      内容を受け付けました。<br>
+      自動返信メールをお送りしましたのでご確認ください。<br><br>
+      担当者より<strong>2営業日以内</strong>にご連絡いたします。<br>
+      今しばらくお待ちください。
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // GASのデプロイURL（doPost）に置き換える
+  var GAS_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+  function getChecked(name) {
+    return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'))
+      .map(function(el) { return el.value; });
+  }
+
+  function val(id) {
+    return document.getElementById(id) ? document.getElementById(id).value.trim() : "";
+  }
+
+  function submitForm() {
+    // バリデーション
+    var required = [
+      { id: "shopName",    label: "店名・屋号" },
+      { id: "category",   label: "業種" },
+      { id: "area",       label: "エリア・住所" },
+      { id: "startTime",  label: "利用開始時間" },
+      { id: "endTime",    label: "利用終了時間" },
+      { id: "maxPeople",  label: "利用可能人数" },
+      { id: "drinkTime",  label: "飲み放題時間" },
+      { id: "drinkMenu",  label: "飲み放題メニュー" },
+      { id: "contactName",label: "担当者名" },
+      { id: "email",      label: "メールアドレス" },
+      { id: "phone",      label: "電話番号" },
+    ];
+    for (var i = 0; i < required.length; i++) {
+      if (!val(required[i].id)) {
+        alert("「" + required[i].label + "」は必須項目です。");
+        document.getElementById(required[i].id).focus();
+        return;
+      }
+    }
+    var days = getChecked("days");
+    if (days.length === 0) {
+      alert("利用可能曜日を少なくとも1つ選択してください。");
+      return;
+    }
+    // メール形式チェック
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val("email"))) {
+      alert("メールアドレスの形式が正しくありません。");
+      document.getElementById("email").focus();
+      return;
+    }
+
+    var btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "送信中...";
+    document.getElementById("error-msg").style.display = "none";
+
+    var payload = {
+      shopName:     val("shopName"),
+      category:     val("category"),
+      area:         val("area"),
+      seats:        val("seats"),
+      hours:        val("hours"),
+      pr:           val("pr"),
+      days:         days,
+      startTime:    val("startTime"),
+      endTime:      val("endTime"),
+      maxPeople:    val("maxPeople"),
+      drinkTime:    val("drinkTime"),
+      extension:    val("extension"),
+      charge:       val("charge"),
+      requiredMenu: val("requiredMenu"),
+      drinkMenu:    val("drinkMenu"),
+      notes:        val("notes"),
+      contactName:  val("contactName"),
+      email:        val("email"),
+      phone:        val("phone"),
+    };
+
+    fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.status === "ok") {
+        document.getElementById("form-area").style.display = "none";
+        document.getElementById("success-area").style.display = "block";
+      } else {
+        throw new Error(data.message || "unknown error");
+      }
+    })
+    .catch(function(err) {
+      document.getElementById("error-msg").style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "無料で掲載を申し込む →";
+    });
+  }
+</script>
+</body>
+</html>
